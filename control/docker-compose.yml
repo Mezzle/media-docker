@@ -1,0 +1,70 @@
+version: "3.4"
+services:
+  ouroboros:
+    environment:
+    - CLEANUP=${OUROBOROS_CLEANUP}
+    - CRON=${OUROBOROS_CRON}
+    - IGNORE=${OUROBOROS_IGNORE}
+    - INTERVAL=${OUROBOROS_INTERVAL}
+    - LOG_LEVEL=${OUROBOROS_LOG_LEVEL}
+    - MONITOR=${OUROBOROS_MONITOR}
+    - NOTIFIERS=${OUROBOROS_NOTIFIERS}
+    - REPO_PASS=${OUROBOROS_REPO_PASS}
+    - REPO_USER=${OUROBOROS_REPO_USER}
+    - SELF_UPDATE=${OUROBOROS_SELF_UPDATE}
+    - TZ=${TZ}
+    image: pyouroboros/ouroboros
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ${DOCKERSHAREDDIR}:/shared
+  portainer:
+    command: -H unix:///var/run/docker.sock
+    environment:
+    - TZ=${TZ}
+    image: portainer/portainer
+    logging:
+      driver: json-file
+      options:
+        max-file: ${DOCKERLOGGING_MAXFILE}
+        max-size: ${DOCKERLOGGING_MAXSIZE}
+    restart: unless-stopped
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ${DOCKERCONFDIR}/portainer:/data
+    - ${DOCKERSHAREDDIR}:/shared
+  caddy:
+    build:
+      context: github.com/abiosoft/caddy-docker.git
+      args:
+        - plugins=cloudflare
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+      - CADDYPATH=/etc/caddycerts
+      - CLOUDFLARE_EMAIL=martin@sourceguru.net
+      - CLOUDFLARE_API_KEY=d3d98f584453846f497d327f961cb5087cf74
+      - ACME_AGREE=true
+    volumes:
+      - ${DOCKERCONFDIR}/caddy/Caddyfile:/etc/Caddyfile
+      - ${DOCKERCONFDIR}/caddy/certs:/etc/caddycerts
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - default
+      - media_default
+      - snipe_default
+      - mayan_default
+      - ghost_default
+networks:
+  media_default:
+    external: true

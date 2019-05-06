@@ -1,0 +1,65 @@
+jackett.example.com {
+    header / Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    tls test@example.com {
+        dns cloudflare
+    }
+
+    proxy / jackett:9117 {
+        transparent
+    }
+}
+
+plex.example.com {
+    header / Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    tls test@example.com {
+        dns cloudflare
+    }
+
+    proxy / plex:32400 {
+        transparent
+    }
+}
+
+portainer.example.com {
+    header / Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    tls test@example.com {
+        dns cloudflare
+    }
+
+    proxy / portainer:9000 {
+        transparent
+    }
+}
+
+radarr.example.com {
+    header / Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    tls test@example.com {
+        dns cloudflare
+    }
+
+    proxy / radarr:7878 {
+        transparent
+    }
+}
+
+sonarr.example.com {
+    header / Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    tls test@example.com {
+        dns cloudflare
+    }
+
+    proxy / sonarr:8989 {
+        transparent
+    }
+}
+
+request.example.com {
+    header / Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    tls test@example.com {
+        dns cloudflare
+    }
+
+    proxy / ombi:3579 {
+        transparent
+    }
+}
